@@ -3,38 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <title>Flask Intro - login page</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+          integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
     <link href="static/style.css" rel="stylesheet" media="screen">
 </head>
 <body>
-
 
 <h2 style="text-align: center;">States Table</h2>
 <div class="container">
 
 
-        <table class="table">
-            <tr>
-                <th>Task ID</th>
-                <th>Status</th>
-                <th>Result</th>
-            </tr>
-            {% for task in tasks %}
+    <table class="table">
+        <tr>
+            <th>Task ID</th>
+            <th>Status</th>
+            <th>Result</th>
+        </tr>
+        {% for task in tasks %}
             <tr>
                 <td>{{ task.id }}</td>
                 <td>{{ task.status }}</td>
                 <td>{{ task.result }}</td>
             </tr>
-            {% endfor %}
-        </table>
+        {% endfor %}
+    </table>
 
     {% if error %}
         <p class="error"><strong>Error:</strong> {{ error }}
     {% endif %}
     <form action="" method="post" class="">
-        <p><input type="data" placeholder="Your hash" name="data" class="col-xs-12">
-        <p><input class="btn btn-primary" type="submit" value="Bruteforce">
-    </form>
+    <p><input type="data" placeholder="Your hash" name="data" class="col-xs-12">
+    <p><input class="btn btn-primary" type="submit" value="Bruteforce">
+        </form>
 </div>
 </body>
 </html>
