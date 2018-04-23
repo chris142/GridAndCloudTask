@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Flask Intro - login page</title>
+    <link href="static/style.css" rel="stylesheet" media="screen">
+</head>
+<body>
+
+
+<h2>States Table</h2>
+<div class="container">
+
+
+        <table border="1">
+            <tr>
+                <th>Task ID</th>
+                <th>Status</th>
+                <th>Result</th>
+            </tr>
+            {% for task in tasks %}
+            <tr>
+                <td>{{ task.id }}</td>
+                <td>{{ task.status }}</td>
+                <td>{{ task.result }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+    {% if error %}
+        <p class="error"><strong>Error:</strong> {{ error }}
+    {% endif %}
+    <form action="" method="post">
+        <p><input type="data" placeholder="Your hash" name="data">
+        <p><input class="btn btn-default" type="submit" value="Bruteforce">
+    </form>
+</div>
+</body>
+</html>
+
+
+

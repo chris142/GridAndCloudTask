@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Flask Intro - login page</title>
+    <link href="static/style.css" rel="stylesheet" media="screen">
+</head>
+<body>
+
+
+<h2>Registration</h2>
+<div class="container">
+    <form action="" method="post">
+
+        <p><input type="text" placeholder="Username" name="username">
+        <p><input type="password" placeholder="Password" name="password">
+        <p><input type="email" placeholder="Email" name="email">
+        <p><input class="btn btn-default" type="submit" value="Register">
+
+    </form>
+
+    {% if error %}
+        <p class="error"><strong>Error:</strong> {{ error }}
+    {% endif %}
+</div>
+</body>
+</html>
+
+
+
