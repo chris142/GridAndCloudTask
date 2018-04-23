@@ -65,6 +65,7 @@ def load_user(user_id):
 parameters = pika.ConnectionParameters()
 connection_out = pika.BlockingConnection(parameters)
 channel_out = connection_out.channel()
+channel_out.exchange_declare('tasks')
 channel_out.queue_declare(
     queue="tasks_data",
     durable=True,
@@ -89,11 +90,11 @@ class Task(db.Model):
         db.engine.execute(text("""
             INSERT INTO tasks (user_id, status, result, data) VALUES (:user_id, :status, :result, :data);
         """).params(user_id=current_user.id, status="PENDING", result="", data=data))
-        task_id = db.engine.execute("""select last_insert_rowid();""").first()
-        print(task_id)
+        task_id = db.engine.execute("""SELECT MAX(id) AS id FROM tasks;""").first().id
+        channel_out.queue_bind('tasks_data', 'tasks', 'tasks_data')
         channel_out.basic_publish(
             body=data,
-            exchange='',
-            routing_key='task_data',
+            exchange='tasks',
+            routing_key='tasks_data',
             properties=pika.BasicProperties(headers={'task_id': task_id}),
         )

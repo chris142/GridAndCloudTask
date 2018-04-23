@@ -1,10 +1,16 @@
 import pika
 from hashlib import sha512
 from itertools import combinations_with_replacement, permutations
+import sqlite3
+
+
+conn = sqlite3.connect('/tmp/taskscheduler.sqlite')
+cr = conn.cursor()
 
 
 def bruteforce(hashstring):
-    for i in range(1, 100):
+    for i in range(1, 10):
+        print("Checking length ", i)
         for comb in permutations('0123456789', i):
             str_comb = ''.join(comb)
             # print(str_comb)
@@ -14,7 +20,7 @@ def bruteforce(hashstring):
 
 def handle_delivery(channel, method, header, body):
     """Called when we receive a message from RabbitMQ"""
-    print(header, body)
+    print('Got task, calculating')
     channel_out.basic_publish(
         body="PENDING",
         exchange='',
@@ -22,13 +28,22 @@ def handle_delivery(channel, method, header, body):
         properties=pika.BasicProperties(headers={'task_id': header.headers.get('task_id')}),
     )
     result = bruteforce(body)
-    print(result)
-    channel_out.basic_publish(
-        body=result,
-        exchange='',
-        routing_key='task_result',
-        properties=pika.BasicProperties(headers={'task_id': header.headers.get('task_id')}),
-    )
+    if result:
+        print(result)
+        channel_out.queue_bind('tasks_result', 'tasks', 'tasks_result')
+        channel_out.basic_publish(
+            body=result,
+            exchange='',
+            routing_key='tasks_result',
+            properties=pika.BasicProperties(headers={'task_id': header.headers.get('task_id')}),
+        )
+    #     cr.execute("""UPDATE tasks SET status="DONE", result=%s WHERE id=%s""" % (result, header.headers.get('task_id')))
+    #     conn.commit()
+    # else:
+    #     cr.execute(
+    #         """UPDATE tasks SET status="FAILTURE", result='undefined' WHERE id=%s""" % (header.headers.get('task_id'), ))
+    #     conn.commit()
+
 
 
 # Step #1: Connect to RabbitMQ using the default parameters
@@ -45,6 +60,7 @@ channel_in.basic_consume(handle_delivery, queue='tasks_data')
 
 connection_out = pika.BlockingConnection(parameters)
 channel_out = connection_out.channel()
+channel_out.exchange_declare('tasks')
 channel_out.queue_declare(
     queue="tasks_result",
     durable=True,
